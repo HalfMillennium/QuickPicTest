@@ -32,6 +32,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.instabug.library.Instabug;
+import com.instabug.library.invocation.InstabugInvocationEvent;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.IIcon;
@@ -39,10 +41,12 @@ import com.orhanobut.hawk.Hawk;
 
 import org.horaapps.leafpic.BuildConfig;
 import org.horaapps.leafpic.R;
+import org.horaapps.leafpic.SelectAlbumBuilder;
 import org.horaapps.leafpic.about.AboutActivity;
 import org.horaapps.leafpic.activities.base.SharedMediaActivity;
 import org.horaapps.leafpic.data.Album;
 import org.horaapps.leafpic.data.Media;
+import org.horaapps.leafpic.data.MediaHelper;
 import org.horaapps.leafpic.fragments.AlbumsFragment;
 import org.horaapps.leafpic.fragments.EditModeListener;
 import org.horaapps.leafpic.fragments.NothingToShowListener;
@@ -57,6 +61,7 @@ import org.horaapps.leafpic.util.StringUtils;
 import org.horaapps.leafpic.util.preferences.Prefs;
 import org.horaapps.leafpic.views.navigation_drawer.NavigationDrawer;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -108,10 +113,18 @@ public class MainActivity extends SharedMediaActivity implements
 
     @FragmentMode private int fragmentMode;
 
+    private boolean adShown = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new Instabug.Builder(getApplication(), "c2d783b33252741786c0bdc40384180c")
+                .setInvocationEvents(InstabugInvocationEvent.SHAKE, InstabugInvocationEvent.SCREENSHOT)
+                .build();
+
+        Toast.makeText(MainActivity.this, "" + adShown, Toast.LENGTH_SHORT).show();
 
         interstitialAd = new InterstitialAd(this);
 
@@ -124,8 +137,9 @@ public class MainActivity extends SharedMediaActivity implements
             @Override
             public void onAdLoaded() {
 
-                if (interstitialAd.isLoaded()) {
+                if (interstitialAd.isLoaded() && !adShown) {
                     interstitialAd.show();
+                    adShown = true;
                 }
 
             }
@@ -301,10 +315,10 @@ public class MainActivity extends SharedMediaActivity implements
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (DeviceUtils.isPortrait(getResources())) {
-            fab.setVisibility(View.VISIBLE);
+            fab.show();
             fab.animate().translationY(fab.getHeight() * 2).start();
         } else
-            fab.setVisibility(View.GONE);
+            fab.hide();
     }
 
     public void goBackToAlbums() {
@@ -405,7 +419,7 @@ public class MainActivity extends SharedMediaActivity implements
         setNavBarColor();
 
         fab.setBackgroundTintList(ColorStateList.valueOf(getAccentColor()));
-        fab.setVisibility(Hawk.get(getString(R.string.preference_show_fab), false) ? View.VISIBLE : View.GONE);
+        fab.show();
         mainLayout.setBackgroundColor(getBackgroundColor());
 
 //        setScrollViewColor(navigationDrawerView);
@@ -472,8 +486,45 @@ public class MainActivity extends SharedMediaActivity implements
                 SettingsActivity.startActivity(this);
                 return true;
 
-            /*
+            
             case R.id.action_move:
+                Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
+                SelectAlbumBuilder.with(getSupportFragmentManager())
+                        .title(getString(R.string.move_to))
+                        .exploreMode(true)
+                        .force(true)
+                        .onFolderSelected(path -> {
+
+                            int totalMedia = rvMediaFragment.getCount();
+
+                            while(rvMediaFragment.getSelectedCount() != 0)
+                            {
+                                ArrayList<Media> selectedMedia = rvMediaFragment.getAllSelected();
+                                //String medNames = "";
+                                for(Media m : selectedMedia)
+                                {
+                                    boolean success = MediaHelper.moveMedia(getApplicationContext(), m, path);
+                                    Toast.makeText(this, "" + success, Toast.LENGTH_SHORT).show();
+                                    if (success) {
+                                        rvMediaFragment.removeMedia(m);
+                                        totalMedia--;
+
+                                        if (totalMedia == 0) {
+                                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                            finish();
+                                        }
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), R.string.move_error, Toast.LENGTH_SHORT).show();
+                                    }
+                                    rvMediaFragment.notifyDataset();
+                                }
+
+                                //Toast.makeText(this, medNames, Toast.LENGTH_SHORT).show();
+                                rvMediaFragment.clearSelected();
+                            }
+                        }).show();
+                return true;
+                /*
                 SelectAlbumBuilder.with(getSupportFragmentManager())
                         .title(getString(R.string.move_to))
                         .onFolderSelected(new SelectAlbumBuilder.OnFolderSelected() {
@@ -498,25 +549,36 @@ public class MainActivity extends SharedMediaActivity implements
                 return true;
                 */
 
-            /*
             case R.id.action_copy:
                 SelectAlbumBuilder.with(getSupportFragmentManager())
-                        .title(getString(R.string.copy_to))
-                        .onFolderSelected(new SelectAlbumBuilder.OnFolderSelected() {
-                            @Override
-                            public void folderSelected(String path) {
-                                boolean success = getAlbum().copySelectedPhotos(getApplicationContext(), path);
-                                //finishEditMode();
+                        .title(getString(R.string.move_to))
+                        .exploreMode(true)
+                        .force(true)
+                        .onFolderSelected(path -> {
 
-                                if (!success) // TODO: 11/21/16 handle in other way
-                                    requestSdCardPermissions();
+                            int totalMedia = rvMediaFragment.getCount();
+
+                            while(rvMediaFragment.getSelectedCount() != 0)
+                            {
+                                ArrayList<Media> selectedMedia = rvMediaFragment.getAllSelected();
+                                //String medNames = "";
+                                for(Media m : selectedMedia)
+                                {
+                                    //Toast.makeText(this, currentMedia.getName(), Toast.LENGTH_SHORT).show();
+
+                                    boolean success = MediaHelper.copyMedia(getApplicationContext(), m, path);
+
+                                    if (!success) {
+                                       Toast.makeText(getApplicationContext(), R.string.move_error, Toast.LENGTH_SHORT).show();
+                                    }
+                                    rvMediaFragment.notifyDataset();
+                                }
+
+                                //Toast.makeText(this, medNames, Toast.LENGTH_SHORT).show();
+                                rvMediaFragment.clearSelected();
                             }
                         }).show();
-
                 return true;
-
-                */
-
 
             /*case R.id.rename:
                 final EditText editTextNewName = new EditText(getApplicationContext());

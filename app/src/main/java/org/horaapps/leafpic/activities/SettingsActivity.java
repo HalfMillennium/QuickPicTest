@@ -65,8 +65,6 @@ public class SettingsActivity extends ThemedActivity {
 
     private Unbinder unbinder;
 
-    private AdView mAdView;
-
     public static void startActivity(@NonNull Context context) {
         context.startActivity(new Intent(context, SettingsActivity.class));
     }
@@ -75,13 +73,6 @@ public class SettingsActivity extends ThemedActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        MobileAds.initialize(this, "ca-app-pub-4748698902608744~4641356660");
-
-        // ad banner
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         unbinder = ButterKnife.bind(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);

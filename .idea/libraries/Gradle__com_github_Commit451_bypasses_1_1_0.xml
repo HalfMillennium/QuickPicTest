@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.Commit451:bypasses-1.1.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/bypasses-1.1.0.aar/e216d7e7398a5fcf4b760d336c249209/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/bypasses-1.1.0.aar/e216d7e7398a5fcf4b760d336c249209/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.Commit451/bypasses/1.1.0/488bd3f61f5124f884a8a8450c2df4353c499cf1/bypasses-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

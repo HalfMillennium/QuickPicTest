@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.orhanobut.hawk.Hawk;
 
@@ -201,6 +202,7 @@ public class StorageHelper {
 
 		if (!success) {
 			success = copyFile(context, source, target);
+			Toast.makeText(context, "Move Failed!", Toast.LENGTH_SHORT).show();
 			if (success) {
 				try {
 					deleteFile(context, source);
