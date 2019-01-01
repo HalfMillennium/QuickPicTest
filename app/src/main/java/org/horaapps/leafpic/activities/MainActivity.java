@@ -39,10 +39,12 @@ import com.orhanobut.hawk.Hawk;
 
 import org.horaapps.leafpic.BuildConfig;
 import org.horaapps.leafpic.R;
+import org.horaapps.leafpic.SelectAlbumBuilder;
 import org.horaapps.leafpic.about.AboutActivity;
 import org.horaapps.leafpic.activities.base.SharedMediaActivity;
 import org.horaapps.leafpic.data.Album;
 import org.horaapps.leafpic.data.Media;
+import org.horaapps.leafpic.data.MediaHelper;
 import org.horaapps.leafpic.fragments.AlbumsFragment;
 import org.horaapps.leafpic.fragments.EditModeListener;
 import org.horaapps.leafpic.fragments.NothingToShowListener;
@@ -113,35 +115,6 @@ public class MainActivity extends SharedMediaActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        interstitialAd = new InterstitialAd(this);
-
-        interstitialAd.setAdUnitId("ca-app-pub-4748698902608744/3224392626");
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        interstitialAd.loadAd(adRequest);
-
-        interstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-
-                if (interstitialAd.isLoaded()) {
-                    interstitialAd.show();
-                }
-
-            }
-
-            @Override
-            public void onAdOpened() {
-
-
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-
-            }
-        });
-
 
         unbinder = ButterKnife.bind(this);
 
@@ -152,6 +125,35 @@ public class MainActivity extends SharedMediaActivity implements
             fragmentMode = FragmentMode.MODE_ALBUMS;
             initAlbumsFragment();
             setContentFragment();
+
+            interstitialAd = new InterstitialAd(this);
+
+            interstitialAd.setAdUnitId("ca-app-pub-4748698902608744/3224392626");
+            AdRequest adRequest = new AdRequest.Builder().build();
+
+            interstitialAd.loadAd(adRequest);
+
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+
+                    if (interstitialAd.isLoaded()) {
+                        interstitialAd.show();
+                    }
+
+                }
+
+                @Override
+                public void onAdOpened() {
+
+
+                }
+
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+
+                }
+            });
 
             return;
         }
@@ -472,31 +474,42 @@ public class MainActivity extends SharedMediaActivity implements
                 SettingsActivity.startActivity(this);
                 return true;
 
-            /*
+
             case R.id.action_move:
                 SelectAlbumBuilder.with(getSupportFragmentManager())
                         .title(getString(R.string.move_to))
-                        .onFolderSelected(new SelectAlbumBuilder.OnFolderSelected() {
-                            @Override
-                            public void folderSelected(String path) {
-                                //TODo
-                                //swipeRefreshLayout.setRefreshing(true);
-                                /*if (getAlbum().moveSelectedMedia(getApplicationContext(), path) > 0) {
-                                    if (getAlbum().getMedia().size() == 0) {
-                                        //getAlbums().removeCurrentAlbum();
-                                        //albumsAdapter.notifyDataSetChanged();
-                                        displayAlbums(false);
-                                    }
-                                    //oldMediaAdapter.swapDataSet(getAlbum().getMedia());
-                                    //finishEditMode();
-                                    supportInvalidateOptionsMenu();
-                                } else requestSdCardPermissions();
+                        .exploreMode(true)
+                        .force(true)
+                        .onFolderSelected(path -> {
 
-                                //swipeRefreshLayout.setRefreshing(false);
+                            int totalMedia = rvMediaFragment.getCount();
+
+                            while(rvMediaFragment.getSelectedCount() != 0)
+                            {
+                                ArrayList<Media> selectedMedia = rvMediaFragment.getAllSelected();
+                                //String medNames = "";
+                                for(Media m : selectedMedia)
+                                {
+                                    boolean success = MediaHelper.moveMedia(getApplicationContext(), m, path);
+                                    if (success) {
+                                        rvMediaFragment.removeMedia(m);
+                                        totalMedia--;
+
+                                        if (totalMedia == 0) {
+                                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                            finish();
+                                        }
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), R.string.move_error, Toast.LENGTH_SHORT).show();
+                                    }
+                                    rvMediaFragment.notifyDataset();
+                                }
+
+                                //Toast.makeText(this, medNames, Toast.LENGTH_SHORT).show();
+                                rvMediaFragment.clearSelected();
                             }
                         }).show();
                 return true;
-                */
 
             /*
             case R.id.action_copy:

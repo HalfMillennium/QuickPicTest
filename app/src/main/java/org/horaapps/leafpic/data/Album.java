@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 
+import org.horaapps.leafpic.activities.base.BaseActivity;
 import org.horaapps.leafpic.data.filter.FilterMode;
 import org.horaapps.leafpic.data.sort.SortingMode;
 import org.horaapps.leafpic.data.sort.SortingOrder;
@@ -304,8 +305,6 @@ public class Album implements CursorHandler, Parcelable {
 					scanFile(context, new String[]{ to.getAbsolutePath() }, new MediaScannerConnection.OnScanCompletedListener() {
 						@Override
 						public void onScanCompleted(String s, Uri uri) {
-							// TODO: 05/08/16 it sucks! look for a better solution!
-
 							if (!found_id_album) {
 								id = ContentProviderHelper.getAlbumId(context, s);
 								found_id_album = true;
@@ -373,4 +372,12 @@ public class Album implements CursorHandler, Parcelable {
 			return new Album[size];
 		}
 	};
+
+	public String changePath(String n)
+    {
+        String newPath = path;
+        newPath = newPath.substring(0, (newPath.lastIndexOf("/")+1)) + n;
+        path = newPath;
+        return path;
+    }
 }

@@ -340,11 +340,11 @@ public class PlayerActivity extends ThemedActivity implements CustomPlayBackCont
     }
 
     HttpDataSource.Factory buildHttpDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
-        return new DefaultHttpDataSourceFactory(Util.getUserAgent(this, "LeafPic"), bandwidthMeter);
+        return new DefaultHttpDataSourceFactory(Util.getUserAgent(this, "QuickPic"), bandwidthMeter);
     }
 
     private HttpDataSource.Factory buildHttpDataSourceFactory(boolean useBandwidthMeter) {
-        return new DefaultHttpDataSourceFactory(Util.getUserAgent(this, "LeafPic"), useBandwidthMeter ? BANDWIDTH_METER : null);
+        return new DefaultHttpDataSourceFactory(Util.getUserAgent(this, "QuickPic"), useBandwidthMeter ? BANDWIDTH_METER : null);
     }
 
     private class PlayerEventListener extends Player.DefaultEventListener {

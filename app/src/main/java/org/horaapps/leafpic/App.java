@@ -2,6 +2,7 @@ package org.horaapps.leafpic;
 
 import android.support.multidex.MultiDexApplication;
 
+import com.crashlytics.android.Crashlytics;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -9,6 +10,7 @@ import com.mikepenz.iconics.Iconics;
 import com.orhanobut.hawk.Hawk;
 import com.squareup.leakcanary.LeakCanary;
 
+import io.fabric.sdk.android.Fabric;
 import org.horaapps.leafpic.util.ApplicationUtils;
 import org.horaapps.leafpic.util.preferences.Prefs;
 
@@ -22,6 +24,7 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         mInstance = this;
 
         ApplicationUtils.init(this);

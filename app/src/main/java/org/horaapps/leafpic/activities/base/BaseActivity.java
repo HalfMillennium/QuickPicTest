@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable;
 
 public abstract class BaseActivity extends ThemedActivity {
     CompositeDisposable disposables = new CompositeDisposable();
-
+    String val = "";
 
     public void disposeLater(Disposable disposable) {
         disposables.add(disposable);
@@ -20,5 +20,15 @@ public abstract class BaseActivity extends ThemedActivity {
     protected void onDestroy() {
         disposables.dispose();
         super.onDestroy();
+    }
+
+    public String getVal()
+    {
+        return val;
+    }
+
+    public void setVal(String v)
+    {
+        val = v;
     }
 }
