@@ -24,11 +24,11 @@ repositories {
 android {
     compileSdkVersion project.sdkVersion
     defaultConfig {
-        applicationId "com.digitalnode.quickpick"
+        applicationId "com.digitalnode.quickpickpro"
         minSdkVersion 19
         targetSdkVersion project.sdkVersion
-        versionName "v3.5"
-        versionCode 41
+        versionName "v3.76"
+        versionCode 53
         vectorDrawables.useSupportLibrary = true
 
         multiDexEnabled true

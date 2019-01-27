@@ -15,6 +15,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 
 import org.horaapps.leafpic.R;
+import org.horaapps.leafpic.activities.MainActivity;
 import org.horaapps.leafpic.activities.PaletteActivity;
 import org.horaapps.leafpic.adapters.MediaAdapter;
 import org.horaapps.leafpic.data.Album;
@@ -178,7 +180,26 @@ public class RvMediaFragment extends BaseMediaGridFragment {
         adapter = new MediaAdapter(getContext(), album.settings.getSortingMode(), album.settings.getSortingOrder(), this);
 
         refresh.setOnRefreshListener(this::reload);
+
+        MainActivity.showBannerAd();
+
         rv.setAdapter(adapter);
+
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    if(!isRecyclerScrollable())
+                        MainActivity.hideBannerAd();
+                    else
+                        MainActivity.showBannerAd();
+                } else {
+                    MainActivity.showBannerAd();
+                }
+            }
+        });
 
         return v;
     }
@@ -682,5 +703,13 @@ public class RvMediaFragment extends BaseMediaGridFragment {
     public void removeMedia(Media m)
     {
         adapter.remove(m);
+    }
+
+    public boolean isRecyclerScrollable() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) rv.getLayoutManager();
+        RecyclerView.Adapter adapter = rv.getAdapter();
+        if (layoutManager == null || adapter == null) return false;
+
+        return layoutManager.findLastCompletelyVisibleItemPosition() < adapter.getItemCount() - 1;
     }
 }

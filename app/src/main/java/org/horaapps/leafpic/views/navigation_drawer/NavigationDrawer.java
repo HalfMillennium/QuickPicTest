@@ -2,6 +2,8 @@ package org.horaapps.leafpic.views.navigation_drawer;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
@@ -10,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -49,13 +52,6 @@ public class NavigationDrawer extends ScrollView implements Themed {
     public void refreshTheme(ThemeHelper themeHelper) {
         selectedColor = themeHelper.getButtonBackgroundColor();
         selectItem(selectedEntry);
-
-        MobileAds.initialize(getContext(), "ca-app-pub-4748698902608744~4641356660");
-
-        // ad banner
-        mAdView = findViewById(R.id.adViewDrawer);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
     }
 
     @IntDef({NAVIGATION_ITEM_ALL_ALBUMS, NAVIGATION_ITEM_ALL_MEDIA, NAVIGATION_ITEM_HIDDEN_FOLDERS,

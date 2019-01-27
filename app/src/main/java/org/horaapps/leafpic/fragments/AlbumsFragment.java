@@ -29,6 +29,7 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.orhanobut.hawk.Hawk;
 
 import org.horaapps.leafpic.R;
+import org.horaapps.leafpic.activities.MainActivity;
 import org.horaapps.leafpic.adapters.AlbumsAdapter;
 import org.horaapps.leafpic.data.Album;
 import org.horaapps.leafpic.data.AlbumsHelper;
@@ -85,8 +86,7 @@ public class AlbumsFragment extends BaseMediaGridFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         excuded = db().getExcludedFolders(getContext());
-
-
+        MainActivity.showBannerAd();
     }
 
     @Override
@@ -199,6 +199,18 @@ public class AlbumsFragment extends BaseMediaGridFragment {
 
         refresh.setOnRefreshListener(this::displayAlbums);
         rv.setAdapter(adapter);
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    MainActivity.hideBannerAd();
+                } else {
+                    MainActivity.showBannerAd();
+                }
+            }
+        });
         return v;
     }
 
@@ -439,7 +451,7 @@ public class AlbumsFragment extends BaseMediaGridFragment {
                 });
                 alertDialog.show();
                 return true;
-
+            /*
             case R.id.rename:
                 //Toast.makeText(getContext(), "Rename??", Toast.LENGTH_SHORT).show();
                 final EditText editTextNewName = new EditText(getActivity());
@@ -450,7 +462,7 @@ public class AlbumsFragment extends BaseMediaGridFragment {
                 renameDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.ok_action).toUpperCase(), (dialog, which) -> {
                     if (editTextNewName.length() != 0) {
                         boolean b = renameAlbum(selectedAlbum, editTextNewName.getText().toString());
-                        /*** doesn't actually change path right now ***/
+
                         Toast.makeText(getContext(), selectedAlbum.changePath("test"), Toast.LENGTH_SHORT).show();
                         if (!b) {
                             StringUtils.showToast(getActivity(), getString(R.string.rename_error));
@@ -459,10 +471,10 @@ public class AlbumsFragment extends BaseMediaGridFragment {
                             adapter.clearSelected(); // Deselect media if rename successful
                     } else
                         StringUtils.showToast(getActivity(), getString(R.string.nothing_changed));
-                });
+                })
                 renameDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel).toUpperCase(), (dialog, which) -> dialog.dismiss());
                 renameDialog.show();
-                return true;
+                return true; */
         }
 
         return super.onOptionsItemSelected(item);
@@ -534,17 +546,5 @@ public class AlbumsFragment extends BaseMediaGridFragment {
         adapter.refreshTheme(t);
         refresh.setColorSchemeColors(t.getAccentColor());
         refresh.setProgressBackgroundColorSchemeColor(t.getBackgroundColor());
-    }
-
-    public boolean renameAlbum(Album al, String newName)
-    {
-        try {
-            al.renameAlbum(getContext(), newName);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
     }
 }

@@ -47,6 +47,7 @@ import com.google.android.gms.ads.MobileAds;
  */
 public class SettingsActivity extends ThemedActivity {
     private Toolbar toolbar;
+    private InterstitialAd interstitialAd;
 
     @BindView(R.id.option_max_brightness) SettingWithSwitchView optionMaxBrightness;
     @BindView(R.id.option_picture_orientation) SettingWithSwitchView optionOrientation;
@@ -76,12 +77,34 @@ public class SettingsActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        MobileAds.initialize(this, "ca-app-pub-4748698902608744~4641356660");
+        /*interstitialAd = new InterstitialAd(this);
 
-        // ad banner
-        mAdView = findViewById(R.id.adView);
+        interstitialAd.setAdUnitId("ca-app-pub-4748698902608744/3224392626");
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
+        interstitialAd.loadAd(adRequest);
+
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+
+                if (interstitialAd.isLoaded()) {
+                    interstitialAd.show();
+                }
+
+            }
+
+            @Override
+            public void onAdOpened() {
+
+
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+
+            }
+        });*/
 
         unbinder = ButterKnife.bind(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);

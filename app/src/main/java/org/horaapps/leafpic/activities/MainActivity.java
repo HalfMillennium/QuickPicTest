@@ -105,7 +105,9 @@ public class MainActivity extends SharedMediaActivity implements
     private TimelineFragment timelineFragment;
 
     private boolean pickMode = false;
+    boolean adShown = false;
     private Unbinder unbinder;
+    private static AdView mAdView;
     private InterstitialAd interstitialAd;
 
     @FragmentMode private int fragmentMode;
@@ -114,6 +116,12 @@ public class MainActivity extends SharedMediaActivity implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MobileAds.initialize(this, "ca-app-pub-4748698902608744~4641356660");
+
+       /* mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);*/
 
 
         unbinder = ButterKnife.bind(this);
@@ -125,7 +133,11 @@ public class MainActivity extends SharedMediaActivity implements
             fragmentMode = FragmentMode.MODE_ALBUMS;
             initAlbumsFragment();
             setContentFragment();
+        }
 
+        if(!adShown)
+        {
+            /*
             interstitialAd = new InterstitialAd(this);
 
             interstitialAd.setAdUnitId("ca-app-pub-4748698902608744/3224392626");
@@ -139,6 +151,7 @@ public class MainActivity extends SharedMediaActivity implements
 
                     if (interstitialAd.isLoaded()) {
                         interstitialAd.show();
+                        adShown = true;
                     }
 
                 }
@@ -153,7 +166,7 @@ public class MainActivity extends SharedMediaActivity implements
                 public void onAdFailedToLoad(int errorCode) {
 
                 }
-            });
+            });*/
 
             return;
         }
@@ -193,11 +206,13 @@ public class MainActivity extends SharedMediaActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SAVE_FRAGMENT_MODE, fragmentMode);
+        outState.putBoolean("adShown", adShown);
         super.onSaveInstanceState(outState);
     }
 
     private void restoreState(@NonNull Bundle savedInstance) {
         fragmentMode = savedInstance.getInt(SAVE_FRAGMENT_MODE, FragmentMode.MODE_ALBUMS);
+        adShown = savedInstance.getBoolean("adShown");
     }
 
     private void displayAlbums(boolean hidden) {
@@ -681,5 +696,22 @@ public class MainActivity extends SharedMediaActivity implements
     private void setupUiForTimeline() {
         lockNavigationDrawer();
         updateToolbar(getString(R.string.timeline_toolbar_title), GoogleMaterial.Icon.gmd_arrow_back, v -> goBackToAlbums());
+    }
+
+    public void getProVersion(View v)
+    {
+        Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.digitalnode.quickpickpro"); // missing 'http://' will cause crashed
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    public static void hideBannerAd()
+    {
+        //mAdView.setVisibility(View.GONE);
+    }
+
+    public static void showBannerAd()
+    {
+       // mAdView.setVisibility(View.VISIBLE);
     }
 }

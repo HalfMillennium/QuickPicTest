@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import org.horaapps.leafpic.activities.MainActivity;
 import org.horaapps.leafpic.data.Media;
 import org.horaapps.liz.ThemeHelper;
 

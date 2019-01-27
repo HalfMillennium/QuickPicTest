@@ -95,6 +95,15 @@
                 app:itemIcon="@string/icon_settings"
                 app:itemText="@string/settings" />
 
+            <!--<Button
+                android:layout_width="match_parent"
+                android:id="@+id/get_pro_version"
+                android:layout_height="wrap_content"
+                android:text="REMOVE ADS"
+                android:onClick="getProVersion"
+                android:textColor="@color/md_white_1000"
+                android:background="@color/md_green_400"/> -->
+
             <org.horaapps.leafpic.views.navigation_drawer.NavigationEntry
                 android:id="@+id/navigation_item_affix"
                 android:layout_width="match_parent"
@@ -103,7 +112,7 @@
                 app:itemIcon="@string/icon_affix"
                 app:itemText="@string/affix" />
 
-            <com.google.android.gms.ads.AdView
+            <!--<com.google.android.gms.ads.AdView
                 xmlns:ads="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/adViewDrawer"
                 android:layout_width="match_parent"
@@ -111,10 +120,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_alignParentBottom="true"
                 ads:adSize="BANNER"
-                ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+                ads:adUnitId="ca-app-pub-3940256099942544/6300978111"> -->
 
             <!-- ca-app-pub-4748698902608744/6621486236 -->
-            </com.google.android.gms.ads.AdView>
 
         </LinearLayout>
     </LinearLayout>
